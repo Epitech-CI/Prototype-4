@@ -15,15 +15,18 @@ public class TimedVersusMode : MonoBehaviour
 
     [SerializeField] public TextMeshProUGUI timer;
 
+    [Header("Visuals")]
+    [SerializeField] private Visuals visuals;
 
     private DuelRules _rules = new DuelRules();
-    private DuelInput _p1Input = new DuelInput(KeyCode.Q, KeyCode.S, KeyCode.D);
+    private DuelInput _p1Input = new DuelInput(KeyCode.A, KeyCode.S, KeyCode.D);
     private DuelInput _p2Input = new DuelInput(KeyCode.J, KeyCode.K, KeyCode.L);
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        UpdateAmmoUI();
         StartCoroutine(GameLoop());
     }
 
@@ -32,12 +35,7 @@ public class TimedVersusMode : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            SceneManager.LoadScene("Classic Mode");
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            SceneManager.LoadScene("Timed Mode");
+            SceneManager.LoadScene("Timed Versus Mode");
         }
 
         if (Input.GetKeyDown(KeyCode.M))
@@ -52,6 +50,7 @@ public class TimedVersusMode : MonoBehaviour
     {
         while (true)
         {
+            visuals.PlayerRest();
             ResetResult();
             Actions? p1 = null;
             Actions? p2 = null;
@@ -69,8 +68,10 @@ public class TimedVersusMode : MonoBehaviour
             Actions player2 = p2 ?? Actions.Nothing;
             _rules.UpdateAmmo(player1, true);
             _rules.UpdateAmmo(player2, false);
-            UpdateAmmoUI(true);
-            UpdateAmmoUI(false);
+            visuals.PlayClapClap();
+            yield return new WaitForSeconds(2);
+            UpdateAmmoUI();
+            visuals.ShowActions(player1, player2);
             Round resolveRound = _rules.ResolveRound(player1, player2);
             result.text = resolveRound switch
             {
@@ -79,12 +80,14 @@ public class TimedVersusMode : MonoBehaviour
                 Round.Draw => "Draw ...",
                 Round.Blocked => "Blocked",
                 Round.Reload => "Reloading ...",
-                Round.Continue => "Next Round"
+                Round.Continue => "Next Round",
+                _ => throw new ArgumentOutOfRangeException(nameof(resolveRound), resolveRound, null)
             };
             yield return new WaitForSeconds(1);
 
             if (_rules.IsGameOver(resolveRound))
             {
+                visuals.ShowResult(resolveRound);
                 yield return new WaitForSeconds(2);
                 result.text = "Game Over";
                 yield break;
@@ -92,10 +95,10 @@ public class TimedVersusMode : MonoBehaviour
         }
     }
 
-    void UpdateAmmoUI(bool isPlayer)
+    void UpdateAmmoUI()
     {
-        if (isPlayer) pAmmo.text = "Player 1 Ammo: " + _rules.PlayerAmmo;
-        else eAmmo.text = "Player 2 Ammo: " + _rules.EnemyAmmo;
+        pAmmo.text = "Player 1 Ammo: " + _rules.PlayerAmmo;
+        eAmmo.text = "Player 2 Ammo: " + _rules.EnemyAmmo;
     }
 
     void ResetResult()

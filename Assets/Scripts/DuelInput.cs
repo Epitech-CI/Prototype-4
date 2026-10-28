@@ -11,8 +11,8 @@ namespace Duel
         public DuelInput()
         {
             _reloading = KeyCode.A;
-            _block = KeyCode.D;
-            _fire = KeyCode.S;
+            _block = KeyCode.S;
+            _fire = KeyCode.D;
         }
 
         public DuelInput(KeyCode reloading, KeyCode block, KeyCode fire)

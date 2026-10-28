@@ -65,17 +65,10 @@ public class ClassicMode : MonoBehaviour
             yield return new WaitForSeconds(2);
             Actions enemy = _rules.EnemyAction();
 
-            visuals.ShowActionPlayer1(ToVisual(player));
-            visuals.ShowActionPlayer2(ToVisual(enemy));
+            visuals.ShowActions(player, enemy);
             UpdateAmmoUI();
 
             Round resolveRound = _rules.ResolveRound(player, enemy);
-
-            if (_rules.IsGameOver(resolveRound))
-            {
-                result.text = "Shots fired!";
-                yield return new WaitForSeconds(1);
-            }
 
             result.text = (resolveRound) switch
             {
@@ -90,8 +83,7 @@ public class ClassicMode : MonoBehaviour
 
             if (_rules.IsGameOver(resolveRound))
             {
-                visuals.ShowActionPlayer1(resolveRound == Round.PlayerWins ? "win" : "fainted");
-                visuals.ShowActionPlayer2(resolveRound == Round.EnemyWins ? "win" : "fainted");
+                visuals.ShowResult(resolveRound);
                 yield return new WaitForSeconds(2);
                 result.text = "Game Over";
                 yield break;
@@ -105,16 +97,5 @@ public class ClassicMode : MonoBehaviour
     {
         pAmmo.text = "Player Ammo: " + _rules.PlayerAmmo;
         eAmmo.text = "Enemy Ammo: " + _rules.EnemyAmmo;
-    }
-
-    string ToVisual(Actions action)
-    {
-        return action switch
-        {
-            Actions.Fire => "fire",
-            Actions.Reloading => "reload",
-            Actions.Block => "block",
-            _ => ""
-        };
     }
 }

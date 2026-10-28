@@ -12,12 +12,12 @@ public class SceneLoader : MonoBehaviour
     {
         SceneManager.LoadScene("Timed Mode");
     }
-    
+
     public void LoadTimedVersus()
     {
         SceneManager.LoadScene("Timed Versus Mode");
     }
-    
+
     public void LoadMainMenu()
     {
         SceneManager.LoadScene("Main Menu");
