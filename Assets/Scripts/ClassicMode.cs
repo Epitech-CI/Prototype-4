@@ -15,6 +15,9 @@ public class ClassicMode : MonoBehaviour
     public TextMeshProUGUI pAmmo;
     public TextMeshProUGUI eAmmo;
 
+    [Header("Visuals")]
+    [SerializeField] private Visuals visuals;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -36,6 +39,9 @@ public class ClassicMode : MonoBehaviour
     {
         string player = "";
 
+        visuals.PlayerRest();
+        result.text = "Choose your action...";
+
         yield return new WaitUntil(() =>
          Input.GetKeyDown(KeyCode.A) ||
          Input.GetKeyDown(KeyCode.S) ||
@@ -55,32 +61,47 @@ public class ClassicMode : MonoBehaviour
             player = "fire";
          }
 
-         //TODO: for whoever is doing the animations, here is where you would put the pat pat animation (hands tapping)
-         yield return new WaitForSeconds(2);
-         string enemy = enemyAction();
+        //Hand tap then wait 2 seconds
+        visuals.PlayClapClap();
+        result.text = "";
+        yield return new WaitForSeconds(2);
+        string enemy = enemyAction();
 
-         //If a player is shot while reloading, they lose.
-         //If both players shoot at the same time, there is a tie.
-         //Otherwise, the shot is blocked and the game continues.
-         //TODO: for the animations, change the displayed sprites here
-         if (player == "fire" && enemy == "reload") {
-             enemyAlive = false;
-             result.text = "Player 1 wins!";
-         }
+        visuals.ShowActionPlayer1(player);
+        visuals.ShowActionPlayer2(enemy);
+
+        //If a player is shot while reloading, they lose.
+        //If both players shoot at the same time, there is a tie.
+        //Otherwise, the shot is blocked and the game continues.
+        if (player == "fire" && enemy == "reload") {
+            enemyAlive = false;
+            yield return new WaitForSeconds(1);
+            result.text = "Player 1 wins!";
+            visuals.ShowActionPlayer1("win");
+            visuals.ShowActionPlayer2("fainted");
+
+        }
          else if (enemy == "fire" && player == "reload") {
-             playerAlive = false;
-             result.text = "Computer player wins!";
-         }
+            playerAlive = false;
+            yield return new WaitForSeconds(1);
+            result.text = "Computer player wins!";
+            visuals.ShowActionPlayer1("fainted");
+            visuals.ShowActionPlayer2("win");
+        }
          else if (player == "fire" && enemy == "fire") {
-             result.text = "Draw...";
-         }
-
+            result.text = "Draw...";
+            yield return new WaitForSeconds(1);
+            visuals.ShowActionPlayer1("fainted");
+            visuals.ShowActionPlayer2("fainted");
+        }
          else if (playerAlive == true && enemyAlive == true && (player == "fire" || enemy == "fire") || (player == "block" && enemy == "block")) {
             result.text = "Blocked!";
+            yield return new WaitForSeconds(1);
             StartCoroutine(WaitForInput());
          }
          else if (playerAlive == true && enemyAlive == true && (player == "reload" || enemy == "reload")) {
             result.text = "Reloading...";
+            yield return new WaitForSeconds(1);
             StartCoroutine(WaitForInput());
          }
     }
