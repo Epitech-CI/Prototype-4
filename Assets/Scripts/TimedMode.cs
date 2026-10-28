@@ -14,7 +14,7 @@ public class TimedMode : MonoBehaviour
     [SerializeField] public TextMeshProUGUI eAmmo;
 
     [SerializeField] public TextMeshProUGUI timer;
-    
+
 
     private DuelRules _rules = new DuelRules();
     private DuelInput _input = new DuelInput();
@@ -96,8 +96,8 @@ public class TimedMode : MonoBehaviour
         if (isPlayer) pAmmo.text = "Player Ammo: " + _rules.PlayerAmmo;
         else eAmmo.text = "Enemy Ammo: " + _rules.EnemyAmmo;
     }
-    
-    void ResetResult() 
+
+    void ResetResult()
     {
         result.text = "";
     }
