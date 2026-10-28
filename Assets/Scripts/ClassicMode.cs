@@ -21,6 +21,8 @@ public class ClassicMode : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        pAmmo.text = "Player Ammo: 0";
+        eAmmo.text = "Enemy Ammo: 0";
         StartCoroutine(WaitForInput());
     }
 
@@ -50,14 +52,12 @@ public class ClassicMode : MonoBehaviour
 
          if (Input.GetKeyDown(KeyCode.A)) {
             playerAmmo = playerAmmo + 1;
-            pAmmo.text = "Player Ammo: " + playerAmmo.ToString();
             player = "reload";
          }
          else if (Input.GetKeyDown(KeyCode.S)) {
             player = "block";
          } else if (Input.GetKeyDown(KeyCode.D) && playerAmmo > 0) {
             playerAmmo = playerAmmo - 1;
-            pAmmo.text = "Player Ammo: " + playerAmmo.ToString();
             player = "fire";
          }
 
@@ -69,6 +69,9 @@ public class ClassicMode : MonoBehaviour
 
         visuals.ShowActionPlayer1(player);
         visuals.ShowActionPlayer2(enemy);
+
+        pAmmo.text = "Player Ammo: " + playerAmmo.ToString();
+        eAmmo.text = "Enemy Ammo: " + enemyAmmo.ToString();
 
         //If a player is shot while reloading, they lose.
         //If both players shoot at the same time, there is a tie.
@@ -89,8 +92,8 @@ public class ClassicMode : MonoBehaviour
             visuals.ShowActionPlayer2("win");
         }
          else if (player == "fire" && enemy == "fire") {
-            result.text = "Draw...";
             yield return new WaitForSeconds(1);
+            result.text = "Draw...";
             visuals.ShowActionPlayer1("fainted");
             visuals.ShowActionPlayer2("fainted");
         }
@@ -112,20 +115,17 @@ public class ClassicMode : MonoBehaviour
             int action = Random.Range(1, 4);
             if (action == 1) {
                 enemyAmmo = enemyAmmo + 1;
-                eAmmo.text = "Enemy Ammo: " + enemyAmmo.ToString();
                 return "reload";
             } else if (action == 2) {
                 return "block";
             }else {
                 enemyAmmo = enemyAmmo - 1;
-                eAmmo.text = "Enemy Ammo: " + enemyAmmo.ToString();
                 return "fire";
             }
         } else {
             int action = Random.Range(1, 3);
             if (action == 1) {
                 enemyAmmo = enemyAmmo + 1;
-                eAmmo.text = "Enemy Ammo: " + enemyAmmo.ToString();
                 return "reload";
             } else {
                 return "block";
