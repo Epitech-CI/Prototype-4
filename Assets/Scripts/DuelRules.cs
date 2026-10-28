@@ -27,7 +27,9 @@ namespace Duel
             return (player, enemy) switch
             {
                 (Actions.Fire, Actions.Reloading) => Round.PlayerWins,
+                (Actions.Fire, Actions.Nothing) => Round.PlayerWins,
                 (Actions.Reloading, Actions.Fire) => Round.EnemyWins,
+                (Actions.Nothing, Actions.Fire) => Round.EnemyWins,
                 (Actions.Fire, Actions.Fire) => Round.Draw,
                 (Actions.Block, Actions.Fire) => Round.Blocked,
                 (Actions.Fire, Actions.Block) => Round.Blocked,

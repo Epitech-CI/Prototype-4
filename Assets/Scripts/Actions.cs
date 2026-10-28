@@ -4,6 +4,7 @@ namespace Duel
     {
         Fire,
         Reloading,
-        Block
+        Block,
+        Nothing
     }
 }
