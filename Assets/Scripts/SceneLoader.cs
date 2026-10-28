@@ -3,8 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    public void LoadClassic() 
+    public void LoadClassic()
     {
         SceneManager.LoadScene("Classic Mode");
+    }
+
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
     }
 }
