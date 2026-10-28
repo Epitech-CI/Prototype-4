@@ -78,6 +78,7 @@ public class ClassicMode : MonoBehaviour
         //Otherwise, the shot is blocked and the game continues.
         if (player == "fire" && enemy == "reload") {
             enemyAlive = false;
+            result.text = "Shots fired!";
             yield return new WaitForSeconds(1);
             result.text = "Player 1 wins!";
             visuals.ShowActionPlayer1("win");
@@ -86,12 +87,14 @@ public class ClassicMode : MonoBehaviour
         }
          else if (enemy == "fire" && player == "reload") {
             playerAlive = false;
+            result.text = "Shots fired!";
             yield return new WaitForSeconds(1);
             result.text = "Computer player wins!";
             visuals.ShowActionPlayer1("fainted");
             visuals.ShowActionPlayer2("win");
         }
          else if (player == "fire" && enemy == "fire") {
+            result.text = "Shots fired!";
             yield return new WaitForSeconds(1);
             result.text = "Draw...";
             visuals.ShowActionPlayer1("fainted");

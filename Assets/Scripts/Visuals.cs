@@ -31,13 +31,16 @@ public class Visuals : MonoBehaviour
 
     // Animation for the clap
     [Header("Clap Clap")]
-    [SerializeField] private Animator ClapAnimator;
+    [SerializeField] private Animator clapAnimator;
     [SerializeField] private SpriteRenderer clapRenderer;
     private Coroutine clapCoroutine;
+
 
     // When players are choosing the action
     public void PlayerRest()
     {
+        player1Renderer.enabled = true;
+        player2Renderer.enabled = true;
         player1Renderer.sprite = player1Choosing;
         player2Renderer.sprite = player2Choosing;
     }
@@ -45,11 +48,15 @@ public class Visuals : MonoBehaviour
     // Show the action choice
     public void ShowActionPlayer1(string action)
     {
+        clapRenderer.enabled = false;
+        player1Renderer.enabled = true;
         player1Renderer.sprite = GetSprite(action, true);
     }
 
     public void ShowActionPlayer2(string action)
     {
+        clapRenderer.enabled = false;
+        player2Renderer.enabled = true;
         player2Renderer.sprite = GetSprite(action, false);
     }
 
@@ -84,17 +91,20 @@ public class Visuals : MonoBehaviour
 
     private IEnumerator PlayClapAnimation()
     {
+        player1Renderer.enabled = false;
+        player2Renderer.enabled = false;
+
         clapRenderer.enabled = true;
 
-        ClapAnimator.Play("Clapclap", 0, 0f);
-        ClapAnimator.Update(0f);
+        clapAnimator.Play("Clapclap", 0, 0f);
+        clapAnimator.Update(0f);
 
-        // Wait until the animation finishes
         yield return new WaitUntil(() =>
         {
-            AnimatorStateInfo state = ClapAnimator.GetCurrentAnimatorStateInfo(0);
+            AnimatorStateInfo state = clapAnimator.GetCurrentAnimatorStateInfo(0);
 
-            return state.IsName("Clapclap") && state.normalizedTime >= 1f;
+            return state.IsName("Clapclap") &&
+                   state.normalizedTime >= 1f;
         });
 
         clapRenderer.enabled = false;
@@ -104,6 +114,7 @@ public class Visuals : MonoBehaviour
     private void Start()
     {
         PlayerRest();
+
         clapRenderer.enabled = false;
     }
 }
