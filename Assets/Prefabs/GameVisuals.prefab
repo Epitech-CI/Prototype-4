@@ -194,6 +194,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Clap
       objectReference: {fileID: 0}
+    - target: {fileID: 6375433057285520665, guid: bb5029ac649bb474c9a3fdfc3184f2df, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

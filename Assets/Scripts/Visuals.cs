@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Duel;
 
 public class Visuals : MonoBehaviour
 {
@@ -45,38 +46,47 @@ public class Visuals : MonoBehaviour
         player2Renderer.sprite = player2Choosing;
     }
 
-    // Show the action choice
-    public void ShowActionPlayer1(string action)
+    // Show the action choice of both players
+    public void ShowActions(Actions player1, Actions player2)
+    {
+        ShowSprites(GetActionSprite(player1, true), GetActionSprite(player2, false));
+    }
+
+    // Show the winner and the fainted player(s) at the end of the game
+    public void ShowResult(Round round)
+    {
+        switch (round)
+        {
+            case Round.PlayerWins:
+                ShowSprites(player1Win, player2Fainted);
+                break;
+            case Round.EnemyWins:
+                ShowSprites(player1Fainted, player2Win);
+                break;
+            case Round.Draw:
+                ShowSprites(player1Fainted, player2Fainted);
+                break;
+        }
+    }
+
+    private void ShowSprites(Sprite player1, Sprite player2)
     {
         clapRenderer.enabled = false;
         player1Renderer.enabled = true;
-        player1Renderer.sprite = GetSprite(action, true);
-    }
-
-    public void ShowActionPlayer2(string action)
-    {
-        clapRenderer.enabled = false;
         player2Renderer.enabled = true;
-        player2Renderer.sprite = GetSprite(action, false);
+        player1Renderer.sprite = player1;
+        player2Renderer.sprite = player2;
     }
 
-    private Sprite GetSprite(string action, bool isPlayer1)
+    private Sprite GetActionSprite(Actions action, bool isPlayer1)
     {
-        switch (action.ToLowerInvariant())
+        return action switch
         {
-            case "reload":
-                return isPlayer1 ? player1Reload : player2Reload;
-            case "block":
-                return isPlayer1 ? player1Block : player2Block;
-            case "fire":
-                return isPlayer1 ? player1Fire : player2Fire;
-            case "win":
-                return isPlayer1 ? player1Win : player2Win;
-            case "fainted":
-                return isPlayer1 ? player1Fainted : player2Fainted;
-            default:
-                return isPlayer1 ? player1Choosing : player2Choosing;
-        }
+            Actions.Reloading => isPlayer1 ? player1Reload : player2Reload,
+            Actions.Block => isPlayer1 ? player1Block : player2Block,
+            Actions.Fire => isPlayer1 ? player1Fire : player2Fire,
+            _ => isPlayer1 ? player1Choosing : player2Choosing
+        };
     }
 
     public void PlayClapClap()
