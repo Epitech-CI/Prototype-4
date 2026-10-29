@@ -12,6 +12,9 @@ public class VersusMode : MonoBehaviour
     public TextMeshProUGUI eAmmo;
 
     [Header("Visuals")] [SerializeField] private Visuals visuals;
+
+    [Header("Sounds")] [SerializeField] private ResultSound resultSound;
+
     private DuelRules _rules = new DuelRules();
     private DuelInput _player1 = new DuelInput();
     private DuelInput _player2 = new DuelInput(KeyCode.J, KeyCode.K, KeyCode.L);
@@ -74,6 +77,7 @@ public class VersusMode : MonoBehaviour
             
             UpdateAmmoUI();
             visuals.ShowActions(player1, player2);
+            resultSound.PlayResultSound(player1, player2);
             
             Round resolveRound = _rules.ResolveRound(player1, player2);
             result.text = resolveRound switch

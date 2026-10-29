@@ -17,6 +17,7 @@ public class TimedMode : MonoBehaviour
 
     [Header("Visuals")] [SerializeField] private Visuals visuals;
 
+    [Header("Sounds")] [SerializeField] private ResultSound resultSound;
 
     private DuelRules _rules = new DuelRules();
     private DuelInput _input = new DuelInput();
@@ -75,6 +76,7 @@ public class TimedMode : MonoBehaviour
 
             //TODO: for the animations, change the displayed sprites here
             visuals.ShowActions(player, enemy);
+            resultSound.PlayResultSound(player, enemy);
             Round resolveRound = _rules.ResolveRound(player, enemy);
             result.text = (resolveRound) switch
             {

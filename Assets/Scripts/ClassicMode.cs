@@ -15,6 +15,8 @@ public class ClassicMode : MonoBehaviour
 
     [Header("Visuals")] [SerializeField] private Visuals visuals;
 
+    [Header("Sounds")] [SerializeField] private ResultSound resultSound;
+
     private DuelRules _rules = new DuelRules();
     private DuelInput _input = new DuelInput();
 
@@ -69,6 +71,7 @@ public class ClassicMode : MonoBehaviour
             Actions enemy = _rules.EnemyAction();
 
             visuals.ShowActions(player, enemy);
+            resultSound.PlayResultSound(player, enemy);
             UpdateAmmoUI();
 
             Round resolveRound = _rules.ResolveRound(player, enemy);
