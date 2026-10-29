@@ -8,6 +8,11 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene("Classic Mode");
     }
 
+    public void LoadVersus()
+    {
+        SceneManager.LoadScene("Versus Mode");
+    }
+
     public void LoadTimed()
     {
         SceneManager.LoadScene("Timed Mode");
