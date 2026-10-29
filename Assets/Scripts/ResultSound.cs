@@ -14,7 +14,7 @@ public class ResultSound : MonoBehaviour
             audioSource.PlayOneShot(shotSound);
         } else if (player1 == Actions.Fire || player2 == Actions.Fire || (player1 == Actions.Block && player2 == Actions.Block)) {
             audioSource.PlayOneShot(shieldSound);
-        } else {
+        } else if (player1 == Actions.Reloading || player2 == Actions.Reloading) {
             audioSource.PlayOneShot(reloadSound);
         }
     }
