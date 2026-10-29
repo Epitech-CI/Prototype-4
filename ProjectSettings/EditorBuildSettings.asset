@@ -17,5 +17,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Timed Versus Mode.unity
     guid: 682014ff040c3491db0c389ddeef8b2f
+  - enabled: 1
+    path: Assets/Scenes/Versus Mode.unity
+    guid: 5380649ba51848ecb58e6d72bfa177b5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

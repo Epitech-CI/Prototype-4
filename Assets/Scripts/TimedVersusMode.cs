@@ -15,8 +15,7 @@ public class TimedVersusMode : MonoBehaviour
 
     [SerializeField] public TextMeshProUGUI timer;
 
-    [Header("Visuals")]
-    [SerializeField] private Visuals visuals;
+    [Header("Visuals")] [SerializeField] private Visuals visuals;
 
     private DuelRules _rules = new DuelRules();
     private DuelInput _p1Input = new DuelInput(KeyCode.A, KeyCode.S, KeyCode.D);
@@ -44,7 +43,6 @@ public class TimedVersusMode : MonoBehaviour
         }
     }
 
-    
 
     IEnumerator GameLoop()
     {
@@ -66,12 +64,25 @@ public class TimedVersusMode : MonoBehaviour
 
             Actions player1 = p1 ?? Actions.Nothing;
             Actions player2 = p2 ?? Actions.Nothing;
+            if (player1 == Actions.Fire && !_rules.CanFire(true))
+            {
+                player1 = Actions.Nothing;
+            }
+
+            if (player2 == Actions.Fire && !_rules.CanFire(false))
+            {
+                player2 = Actions.Nothing;
+            }
+
             _rules.UpdateAmmo(player1, true);
             _rules.UpdateAmmo(player2, false);
             visuals.PlayClapClap();
+
             yield return new WaitForSeconds(2);
+
             UpdateAmmoUI();
             visuals.ShowActions(player1, player2);
+
             Round resolveRound = _rules.ResolveRound(player1, player2);
             result.text = resolveRound switch
             {

@@ -13,8 +13,7 @@ public class ClassicMode : MonoBehaviour
 
     [SerializeField] public TextMeshProUGUI eAmmo;
 
-    [Header("Visuals")]
-    [SerializeField] private Visuals visuals;
+    [Header("Visuals")] [SerializeField] private Visuals visuals;
 
     private DuelRules _rules = new DuelRules();
     private DuelInput _input = new DuelInput();
@@ -50,16 +49,20 @@ public class ClassicMode : MonoBehaviour
 
             Actions? input = _input.ReadAction();
 
-            while (input == null || (input == Actions.Fire && !_rules.CanFire(true)))
+            while (input == null)
             {
                 yield return null;
                 input = _input.ReadAction();
             }
 
             Actions player = input.Value;
+            if (player == Actions.Fire && !_rules.CanFire(true))
+            {
+                player = Actions.Nothing;
+            }
+
             _rules.UpdateAmmo(player, true);
 
-            //Hand tap then wait 2 seconds
             visuals.PlayClapClap();
             result.text = "";
             yield return new WaitForSeconds(2);
@@ -80,7 +83,7 @@ public class ClassicMode : MonoBehaviour
                 Round.Continue => "Next round",
                 _ => throw new ArgumentOutOfRangeException()
             };
-
+            yield return new WaitForSeconds(1);
             if (_rules.IsGameOver(resolveRound))
             {
                 visuals.ShowResult(resolveRound);

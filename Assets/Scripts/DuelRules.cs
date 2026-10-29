@@ -48,6 +48,7 @@ namespace Duel
         public void UpdateAmmo(Actions action, bool isPlayer)
         {
             int delta = action switch { Actions.Reloading => 1, Actions.Fire => -1, _ => 0 };
+            if (CanFire(isPlayer) == false && action == Actions.Fire) return;
             if (isPlayer) PlayerAmmo += delta;
             else EnemyAmmo += delta;
         }

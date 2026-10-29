@@ -14,9 +14,8 @@ public class TimedMode : MonoBehaviour
     [SerializeField] public TextMeshProUGUI eAmmo;
 
     [SerializeField] public TextMeshProUGUI timer;
-    
-    [Header("Visuals")]
-    [SerializeField] private Visuals visuals;
+
+    [Header("Visuals")] [SerializeField] private Visuals visuals;
 
 
     private DuelRules _rules = new DuelRules();
@@ -61,6 +60,11 @@ public class TimedMode : MonoBehaviour
             }
 
             Actions player = input ?? Actions.Nothing;
+            if (player == Actions.Fire && !_rules.CanFire(true))
+            {
+                player = Actions.Nothing;
+            }
+
             _rules.UpdateAmmo(player, true);
 
             //TODO: for whoever is doing the animations, here is where you would put the pat pat animation (hands tapping)
