@@ -18,6 +18,9 @@ public class ClassicMode : MonoBehaviour
     [Header("Visuals")]
     [SerializeField] private Visuals visuals;
 
+    [Header("Sounds")]
+    [SerializeField] private ResultSound resultSound;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -69,6 +72,7 @@ public class ClassicMode : MonoBehaviour
 
         visuals.ShowActionPlayer1(player);
         visuals.ShowActionPlayer2(enemy);
+        resultSound.PlayResultSound(player, enemy);
 
         pAmmo.text = "Player Ammo: " + playerAmmo.ToString();
         eAmmo.text = "Enemy Ammo: " + enemyAmmo.ToString();
