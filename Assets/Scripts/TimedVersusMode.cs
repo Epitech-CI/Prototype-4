@@ -17,6 +17,8 @@ public class TimedVersusMode : MonoBehaviour
 
     [Header("Visuals")] [SerializeField] private Visuals visuals;
 
+    [Header("Sounds")] [SerializeField] private ResultSound resultSound;
+
     private DuelRules _rules = new DuelRules();
     private DuelInput _p1Input = new DuelInput(KeyCode.A, KeyCode.S, KeyCode.D);
     private DuelInput _p2Input = new DuelInput(KeyCode.J, KeyCode.K, KeyCode.L);
@@ -82,6 +84,7 @@ public class TimedVersusMode : MonoBehaviour
 
             UpdateAmmoUI();
             visuals.ShowActions(player1, player2);
+            resultSound.PlayResultSound(player1, player2);
 
             Round resolveRound = _rules.ResolveRound(player1, player2);
             result.text = resolveRound switch
