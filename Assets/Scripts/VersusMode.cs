@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -16,7 +15,7 @@ public class VersusMode : MonoBehaviour
     [Header("Sounds")] [SerializeField] private ResultSound resultSound;
 
     private DuelRules _rules = new DuelRules();
-    private DuelInput _player1 = new DuelInput();
+    private DuelInput _player1 = new DuelInput(KeyCode.A, KeyCode.S, KeyCode.D);
     private DuelInput _player2 = new DuelInput(KeyCode.J, KeyCode.K, KeyCode.L);
 
     void Start()
@@ -43,68 +42,78 @@ public class VersusMode : MonoBehaviour
         while (true)
         {
             visuals.PlayerRest();
-            result.text = "Choose your action...";
 
             Actions? p1 = null;
             Actions? p2 = null;
+            ShowReadyStatus(p1, p2);
 
             while (p1 == null || p2 == null)
             {
-                p1 ??= this._player1.ReadAction();
-                p2 ??= this._player2.ReadAction();
+                p1 ??= ReadAction(_player1, true);
+                p2 ??= ReadAction(_player2, false);
+                ShowReadyStatus(p1, p2);
                 yield return null;
             }
 
-            Actions player1 = p1 ?? Actions.Nothing;
-            Actions player2 = p2 ?? Actions.Nothing;
-
-            if (player1 == Actions.Fire && !_rules.CanFire(true))
-            {
-                player1 = Actions.Nothing;
-            }
-
-            if (player2 == Actions.Fire && !_rules.CanFire(false))
-            {
-                player2 = Actions.Nothing;
-            }
+            Actions player1 = p1.Value;
+            Actions player2 = p2.Value;
 
             _rules.UpdateAmmo(player1, true);
             _rules.UpdateAmmo(player2, false);
-            
+
             visuals.PlayClapClap();
-            
+            result.text = "";
             yield return new WaitForSeconds(2);
-            
+
             UpdateAmmoUI();
             visuals.ShowActions(player1, player2);
             resultSound.PlayResultSound(player1, player2);
-            
+
             Round resolveRound = _rules.ResolveRound(player1, player2);
-            result.text = resolveRound switch
-            {
-                Round.PlayerWins => "Player 1 wins",
-                Round.EnemyWins => "Player 2 wins",
-                Round.Draw => "Draw ...",
-                Round.Blocked => "Blocked",
-                Round.Reload => "Reloading ...",
-                Round.Continue => "Next Round",
-                _ => throw new ArgumentOutOfRangeException(nameof(resolveRound), resolveRound, null)
-            };
-            yield return new WaitForSeconds(1);
 
             if (_rules.IsGameOver(resolveRound))
             {
+                result.text = "Shots fired!";
+                yield return new WaitForSeconds(1);
+                result.text = resolveRound switch
+                {
+                    Round.PlayerWins => "Player 1 wins!",
+                    Round.EnemyWins => "Player 2 wins!",
+                    _ => "Draw..."
+                };
                 visuals.ShowResult(resolveRound);
-                yield return new WaitForSeconds(2);
-                result.text = "Game Over";
                 yield break;
             }
+
+            bool blocked = resolveRound == Round.Blocked ||
+                           (player1 == Actions.Block && player2 == Actions.Block);
+            result.text = blocked ? "Blocked!" : "Reloading...";
+            yield return new WaitForSeconds(1);
         }
+    }
+
+    // Firing without ammo is ignored so the player keeps choosing instead of losing the turn
+    Actions? ReadAction(DuelInput input, bool isPlayer1)
+    {
+        Actions? action = input.ReadAction();
+        if (action == Actions.Fire && !_rules.CanFire(isPlayer1))
+        {
+            return null;
+        }
+
+        return action;
+    }
+
+    void ShowReadyStatus(Actions? player1, Actions? player2)
+    {
+        string status1 = player1 == null ? "choosing..." : "ready!";
+        string status2 = player2 == null ? "choosing..." : "ready!";
+        result.text = "P1: " + status1 + "      P2: " + status2;
     }
 
     void UpdateAmmoUI()
     {
-        pAmmo.text = "Player Ammo: " + _rules.PlayerAmmo;
-        eAmmo.text = "Enemy Ammo: " + _rules.EnemyAmmo;
+        pAmmo.text = "Player 1 Ammo: " + _rules.PlayerAmmo;
+        eAmmo.text = "Player 2 Ammo: " + _rules.EnemyAmmo;
     }
 }
